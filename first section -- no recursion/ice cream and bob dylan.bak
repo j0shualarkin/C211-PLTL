@@ -1,0 +1,73 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |ice cream and bob dylan|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(define-struct album [artist title release-date])
+
+; what are the functions that come with an album
+
+
+; give examples of albums
+(define album0 (make-album "Bob Dylan" "Another Side" 1964))
+(define album1 (make-album "Fleetwood Mac" "Rumors" 1980))
+
+
+
+(define (dad-dj al)
+  (cond
+    [(> (album-release-date al) 1990) "I can't understand them!"]
+    [(< (album-release-date al) 1960) "My dad used to do video for So you think you can dance Canada."]
+    [else "Good music died after the 80s."]))
+
+
+;----
+
+(define (dylan? al)
+  (if (string=? "Bob Dylan" (album-artist al))
+      (folk? al)
+     #false))
+
+(define (folk? al)
+  (if (> 1966 (album-release-date al)) "I hate electric Dylan maaaaaan." "Hell yeah folk Dylan's the best"))
+
+
+
+; A Flavor is one of:
+; - Chocolate
+; - Mint
+; - Raspberry <-- most expensive flavor
+
+(define (flavor=? f1 f2)
+  (string=? f1 f2))
+
+(define-struct ice-cream [flav cone])
+
+; A ConeType is one of:
+; - Waffle <-- most expensive cone
+; - Sugar
+; - Cake
+
+; A ConeSize is one of:
+; - "Small"
+; - "Medium"
+; - "Large"
+
+; A Cone is a (make-cone ConeType ConeSize)
+(define-struct cone [type size])
+
+(define (same-price? x y)
+  (and (flavor=? (ice-cream-flav x) (ice-cream-flav y))
+       (same-cone?
+        (cone-type (ice-cream-cone x))
+        (cone-type (ice-cream-cone y)))))
+
+
+(define (same-cone? x y)
+  (string=? (cone-type x) (cone-type y)))
+
+
+
+
+
+
+
+

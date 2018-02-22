@@ -1,0 +1,44 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |more list recursion|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; mult-by-n : Number [ListOf Number] -> [ListOf Number]
+;; updated the given list to contain multiple of
+;; the given number (n) and each element
+
+
+
+
+
+
+;; add-n : Number [ListOf Number] -> [ListOf Number]
+;; return a list such that n is added to each element of ls
+
+
+
+
+;; index : X [ListOf X] -> Number
+;; return the index (0-based) of the given Element of the given list
+;; if the element is not in the list, return -1
+
+
+
+;; dot-product : [ListOf Number] [ListOf Number] -> Number
+;; return the value calculated by adding the results of
+;; multiplying the corresponding elements of the two lists given
+
+
+
+;; append : [ListOf X] [ListOf X] -> [ListOf X]
+;; combine the two given lists into one list
+
+
+
+;; reverse : [ListOf X] -> [X fOtsiL]
+;; return the same list but in the reverse order
+
+
+
+
+;; merge : [ListOf Number] [ListOf Number]
+;; return a list of the elements form both the given lists,
+;; where the elements are in ascending order

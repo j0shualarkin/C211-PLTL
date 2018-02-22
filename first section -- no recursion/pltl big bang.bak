@@ -1,0 +1,38 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |pltl big bang|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image
+         2htdp/universe)
+
+;; PLTL The Big-Bang The Consumer
+
+(define (req-bites n)
+  (cond
+    [(<= n 1) n]
+    [else (+ (req-bites (sub1 n)) (req-bites (sub1 (sub1 n))))]))
+
+
+
+
+;; A World is a (make-world Nat Nat Nat Nat Nat Color)
+;; The first two fields are the player's position, and will be controlled by the mouse
+;; The player's size is determined by how many bites they've taken
+;; to increment size, the amount of bites has to be >= one of the preset sizes
+;; just check how many bites they've taken, and if it's enough, give em the next size
+(define-struct world [wx wy size bites bx by col])
+
+(define SCN-H 600)
+(define SCN-W 400)
+(define GAME-H 400)
+(define GAME-W 300)
+(define SCORE-X (/ SCN-W 2))
+(define SCORE-Y 70)
+(define INIT-SIZE 0)
+(define INIT-BITES 1)
+
+
+(define STARTING-WORLD (make-world (/ GAME-W 2) (/ GAME-H 2) 0 (random GAME-W) (random GAME-H) 0))
+
+
+(define init-player (make-world (/ GAME-W 2) (/ GAME-H 2) 0 1 )))
+

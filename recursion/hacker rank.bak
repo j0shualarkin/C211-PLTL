@@ -1,0 +1,10 @@
+#lang racket
+
+(define f
+  (lambda (n ls)
+    (letrec
+        ([helper (λ (n0 a) (if (zero? n0) '() (cons a (helper (sub1 n0) a))))])
+      (if (null? ls) '() (append (helper n (car ls)) (f n (cdr ls)))))))
+
+(f 3 '(a b c))
+'(a a a b b b c c c)

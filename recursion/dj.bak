@@ -1,0 +1,17 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname dj) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(define-struct album [artist title release-date])
+
+(define album0 (make-album "Bob Dylan" "Another Side" 1964))
+(define album1 (make-album "Fleetwood Mac" "Rumors" 1980))
+
+
+(define (snobby-dj al)
+  (cond
+    [(> (album-release-date al) 1990) "u emo punks"]
+    [(< (album-release-date 1960) "nah man"]
+    [else "hell yeah!"]))
+
+              
+               

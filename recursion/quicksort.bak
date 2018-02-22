@@ -1,0 +1,19 @@
+#lang racket
+
+
+(define quicksort
+  (λ (ls)
+    (if (null? ls) '()
+    (letrec
+        (
+         [pivot (car ls)]
+         [split (λ (n ls op)
+                  (if (op (car ls) n)
+                      (cons (car ls) (split n (cdr ls) op))
+                      (split n (cdr ls) op)))]
+         [left-side (split pivot (cdr ls) <=)]
+         [right-side (split pivot (cdr ls) >)]
+         )
+      (quicksort (partition pivot ls))))))
+
+

@@ -1,0 +1,16 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname turnstile) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
+
+; A Turnstile is a (make-turnstile Boolean Boolean)
+
+(define-struct turnstile [paid? used?])
+
+
+(require 2htdp/image)
+(require 2htdp/universe)
+
+(define open^ (rotate 60 (rectangle 100 "solid" "black")))
+(define closed^ (rectangle 100 "solid" "black"))
+(define post (circle 20 "solid" "black"))

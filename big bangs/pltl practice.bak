@@ -1,0 +1,38 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |pltl practice|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image)
+(require 2htdp/universe)
+
+
+;; Basic Data for our Game
+
+(define SCN-H 600)
+(define SCN-W 400)
+(define GM-H 400)
+(define GM-W 300)
+
+(define CANVAS (empty-scene SCN-W SCN-H))
+(define BOARD (rectangle GM-W GM-H "solid" "black"))
+
+
+;; Structures for the Player and the Coin
+
+;; A Player is a (make-player Nat Nat)
+(define-struct player [x y])
+;; A Coin is a (make-coin Nat Nat)
+(define-struct coin [x y])
+
+;; A World is a (make-world player coin)
+(define-struct world [player coin])
+
+
+
+;; What are the functions that come with these definitions?
+;; write out the templates for both!
+
+
+;; Here's a data example of each struct
+(define p0 (make-player (/ GM-W 2) (/ GM-H 2)))
+(define c0 (make-coin (/ GM-W 4) (/ GM-H 4)))
+(define w0 (make-world p0 c0))

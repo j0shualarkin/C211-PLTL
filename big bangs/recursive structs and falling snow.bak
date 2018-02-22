@@ -1,0 +1,83 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |recursive structs and falling snow|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+; An Article is a
+; - (make-article String String Boolean)
+(define-struct article [type color clean])
+
+; A LaundryBasket is one of:
+; - (make-empty-basket)
+; - (make-basket Article LaundryBasket
+(define-struct empty-basket [])
+(define-struct basket [item rest])
+
+; list the functions that come with each structure definition
+#|
+article-type
+article-color
+article-clean
+make-article   : 
+article?       : Any -> Boolean
+
+empty-basket?
+make-empty-basket 
+
+basket-item
+...
+
+|#
+; FOLLOW DESIGN RECIPE FOR ALL FUNCTIONS
+
+; write the template for processing a Basket
+; how are you going to handle the top Article in the Basket?
+
+; design a function parse that returns a basket of all the dirty Articles in the given basket
+
+
+; design a function coordinate that takes a color (string) and returns all the items in
+; the given basket that are that color
+
+
+
+; --------------------------------------------------
+
+
+; Falling Snowflakes
+
+; A Point is one of:
+; - (make-null-point)
+; - (make-point Number Number Point)
+
+(define-struct null-point [])
+(define-struct point [x y more])
+
+
+(define SCN-W 500)
+(define SCN-H 500)
+(define CANVAS (empty-scene SCN-W SCN-H))
+
+
+; A World is a Point
+(define (d-h w)
+  (cond
+    [(null-point? w) CANVAS]
+    [else (place-image snowflake (point-x w) (point-y w) (d-h (point-more w)))]))
+
+(define (m-h w mx my me)
+  (cond
+    [(string=? "button-down" me) (make-point mx my w)]
+    [(string=? "drag" me) (apply-wind w mx my)]
+    [else w]))
+
+(define (apply-wind w mx my)
+  (cond
+    [(null-point? w) (make-null-point)]
+    [else (make-point (+ (abs (- mx (point-x w))) (point-x w))
+                      (+ (abs (- my (point-y w))) (point-y w))
+                      (apply-wind (point-more w) mx my))]))
+
+
+
+
+
+

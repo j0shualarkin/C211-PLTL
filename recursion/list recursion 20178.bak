@@ -1,0 +1,11 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname |list recursion 20178|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
+;; A Farm is a (make-farm FarmAnimal Nat)
+(define-struct farm [animal amount])
+
+(define pig (make-farm "pig" 3))
+(define cow (make-farm "cow" 1))
+(define hen (make-farm "hen" 2))
+

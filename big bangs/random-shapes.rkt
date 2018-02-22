@@ -1,0 +1,152 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname random-shapes) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image)
+(require 2htdp/universe)
+
+; A NoShapes is a (make-no-shapes)
+(define-struct no-shapes [])
+
+; A RandomShapes is one of:
+; - (make-no-shapeS)
+; - (make-RandomShapes Image Number Number RandomShapes)
+(define-struct randomshapes [shapes x y more])
+
+; we want the shape to store it's own x and y position
+
+(define base-case (make-no-shapes))
+(define one-shape (make-randomshapes (triangle 30 "solid" "green") 100 100 (make-no-shapes)))
+(define two-shapes (make-randomshapes (circle 15 "outline" "orange") 150 150
+                                      (make-randomshapes (square 25 "solid" "yellow") 50 50
+                                                         (make-no-shapes))))
+
+(define three-shapes (make-randomshapes (ellipse 22 44 "outline" "red") 200 200 two-shapes))
+
+
+(define SCN-W 500)
+(define SCN-H 500)
+(define CANVAS (empty-scene SCN-W SCN-H))
+
+
+; A World is a RandomShapes
+
+
+; d-h : RandomShapes -> Image
+(define (d-h rs)
+  (cond
+    [(no-shapes? rs) CANVAS]
+    [else (place-image (randomshapes-shapes rs)
+                       (randomshapes-x rs) (randomshapes-y rs)
+                       (d-h (randomshapes-more rs)))]))
+
+(check-expect (d-h base-case) CANVAS)
+(check-expect (d-h one-shape) (place-image (triangle 30 "solid" "green") 100 100 CANVAS))
+(check-expect (d-h two-shapes)
+              (place-image (circle 15 "outline" "orange")
+                           150 150
+                           (place-image (square 25 "solid" "yellow")
+                                        50 50
+                                        (empty-scene 500 500))))
+
+
+(define SHAPE-SIZE 70)
+
+; k-h : RandomShapes KeyEvent -> RandomShapes
+(define (k-h rs ke)
+  (cond
+    [(string=? "r" ke) (make-randomshapes (rectangle (random SHAPE-SIZE) (random SHAPE-SIZE)
+                                                     "solid" (make-color (random 256) (random 256) (random 256)))
+                                          (random SCN-W) (random SCN-H) rs)]
+    [(string=? "s" ke) (make-randomshapes (square (random SHAPE-SIZE) "solid"
+                                                  (make-color (random 256) (random 256) (random 256)))
+                                          (random SCN-W) (random SCN-H) rs)]
+    [(string=? "t" ke) (make-randomshapes (triangle (random SHAPE-SIZE) "solid"
+                                                    (make-color (random 256) (random 256) (random 256)))
+                                          (random SCN-W) (random SCN-H) rs)]
+    [(or (string=? "o" ke) (string=? "e" ke))
+     (make-randomshapes (ellipse (random SHAPE-SIZE) (random SHAPE-SIZE)
+                                                     "solid" (make-color (random 256) (random 256) (random 256)))
+                                          (random SCN-W) (random SCN-H) rs)]
+    [(string=? "c" ke) (make-randomshapes (circle (random SHAPE-SIZE)
+                                                     "solid" (make-color (random 256) (random 256) (random 256)))
+                                          (random SCN-W) (random SCN-H) rs)]
+    [(string=? " " ke) (make-no-shapes)]
+    [else rs]))
+
+
+(check-expect (k-h base-case "a") base-case)
+(check-random (k-h base-case "r") (make-randomshapes (rectangle (random SHAPE-SIZE) (random SHAPE-SIZE) "solid" (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+(check-random (k-h base-case "s") (make-randomshapes (square (random SHAPE-SIZE) "solid" (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+
+
+
+(check-random (k-h base-case "t") (make-randomshapes (triangle (random SHAPE-SIZE) "solid" (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+
+
+(check-random (k-h base-case "e") (make-randomshapes (ellipse (random SHAPE-SIZE) (random SHAPE-SIZE) "solid" (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+(check-random (k-h base-case "o") (make-randomshapes (ellipse (random SHAPE-SIZE) (random SHAPE-SIZE) "solid" (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+
+(check-random (k-h base-case "c") (make-randomshapes (circle
+                                                      (random SHAPE-SIZE)
+                                                      "solid"
+                                                      (make-color (random 256) (random 256) (random 256)))
+                                                     (random SCN-W) (random SCN-H)
+                                                     base-case))
+
+(check-expect (k-h two-shapes " ") base-case)
+
+
+#;
+(define (t-h rs)
+  (cond
+    [(no-shapes? rs) (make-no-shapes)]
+    [else ...]))
+#|
+(check-expect (t-h base-case) (make-no-shapes))
+(check-expect (t-h one-shape) (make-randomshapes (triangle 29 "solid" "green") 100 100 (make-no-shapes)))
+(check-expect (t-h two-shapes) (make-randomshapes (circle 14 "outline" "orange") 150 150
+                                      (make-randomshapes (square 24 "solid" "yellow") 50 50
+                                                         (make-no-shapes)))))
+|#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(define (main x)
+  (big-bang base-case
+          [to-draw d-h]
+          [on-key k-h]))
+
+
+
+
+
+

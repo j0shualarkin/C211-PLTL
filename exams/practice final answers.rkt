@@ -1,0 +1,127 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname |practice final answers|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+
+;; Section 1: Using Abstract Functions and Lambdas
+
+;; foldr  : [X Y -> Y] Y [ListOf X]
+;; foldl  : [X Y -> Y] Y [ListOf X]
+;; filter : [X -> Bool] [ListOf X] -> [ListOf X]
+;; map    : [X -> Y] [ListOf X] -> [ListOf Y]
+
+;; f->c : [List Number] -> [List Number]
+(define (f->c fahrenheit)
+  (map (λ (i) (/ (* (- i 32) 5) 9)) fahrenheit))
+
+(check-expect (f->c '(95 68 32)) '(35 20 0))
+
+
+
+;; 4th-to-last-negative : [List Number] -> Number
+(define (4th-to-last-negative lon)
+  (local [(define negs (filter negative? lon))
+          (define (get i is)
+            (cond
+              ((zero? (sub1 i)) (first is))
+              (else (get (sub1 i) (rest is)))))]
+    (cond
+      ((empty? negs) #f)
+      (else (get 4 (reverse negs))))))
+
+(check-expect (4th-to-last-negative '(1 -2 -3 -4 -5 6)) -2)
+(check-expect (4th-to-last-negative '()) #f)
+
+
+;; neg-pred : [X -> Bool] -> [X -> Bool]
+(define (neg-pred f)
+  (λ (x) (not (f x))))
+
+(check-expect ((neg-pred odd?) 3) #f)
+(check-expect ((neg-pred number?) 'h) #t)
+
+;; flip : [X Y -> Z] -> [Y X -> Z]
+(define (flip f)
+  (λ (e1 e2) (f e2 e1)))
+
+
+(check-expect ((flip -) 5 6) 1)
+(check-expect ((flip quotient) 5 23) 4)
+;(((flip quotient) 5 23) c->e 4)
+(check-expect ((flip (flip string-append)) "basket" "ball") "basketball")
+(check-expect ((flip /) 3 6) 2)
+(check-expect ((flip >) 4 6) #t)
+
+;; sample : [List [Nat -> Nat]]
+(define sample `(,(λ (x) (+ x 1)) ,(λ (x) (+ (* x x) 3)) ,(λ (x) (+ (- 5 x) 6))))
+
+(define (find-max-value lof val)
+  (foldr (λ (i ans) (max (i val) ans)) ((first lof) val) (rest lof)))
+
+(check-expect (find-max-value sample 3) 12)
+(check-expect (find-max-value sample 0) 11)
+
+(define (find-max-value/acc lof val acc)
+  (cond
+    ((empty? lof) acc)
+    (else (find-max-value/acc (rest lof) val (max ((first lof) val) acc)))))
+
+
+(check-expect (find-max-value/acc sample 3 0) 12)
+(check-expect (find-max-value/acc sample 0 0) 11)
+
+
+(define-struct student (name majors debt others))
+
+(define example
+  (make-student "James" (list "Computer Science") -12000
+                (make-student "Kelly" (list "Computer Science" "English" "Math") -2000
+                              '())))
+
+;; make-student : String [List String] Nat Student -> Student
+;; student-name : Student -> String
+;; student-majors : Student -> [List String]
+;; student-debt : Student -> Nat
+;; student-others : Student -> Student
+;; student? : Any -> Bool
+
+(define (foldr-student op base stu)
+  (cond
+    ((empty? stu) base)
+    (else (op (student-name stu)
+              (student-majors stu)
+              (student-debt stu)
+              (foldr-student op base (student-others stu))))))
+
+(check-expect (foldr-student
+               (λ (n m d a) (+ d a)) 0 example) -14000)
+
+
+(define (filter-student op student)
+  (foldr-student (λ (n m d a)
+                   (if (op n m d) (make-student n m d a) a)) '() student))
+
+(check-expect (filter-student
+               (λ (n m d) (< d -10000)) example)
+               (make-student "James" (list "Computer Science") -12000 '()))
+
+(define (sub2 n)
+  (sub1 (sub1 n)))
+
+;; ping-pong : [List Symbol] -> [Maybe Symbol]
+(define (ping-pong points)
+  (local [(define (finished? n1 n2)
+            (or (and (<= 11 n1) (> (sub2 n1) n2))
+                (and (<= 11 n2) (> (sub2 n2) n1))))
+          (define (who-wins xs e1 e2 s1 s2 acc)
+            (cond
+              ((empty? xs) (if (finished? s1 s2) acc #f))
+              ((eqv? (first xs) e1) (who-wins (rest xs) e1 e2
+                                              (add1 s1) s2
+                                              (if (> (add1 s1) s2) (first xs))))
+              ))]))
+
+
+(check-expect (ping-pong '(j l j l j j l j l l l l j l j l j l j l)) 'l)
+(check-expect (ping-pong '(j l j l j j l j l l l l j l j l j l j j l)) #f)
+(check-expect (ping-pong '(j j l j j j l l l l j l j l j j j j j)) 'j)
+(check-expect (ping-pong '(j l j l j l j j l)) #f)
